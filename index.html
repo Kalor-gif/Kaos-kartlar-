@@ -45,7 +45,7 @@ h2{font-size:22px}
 .pl input,.code{flex:1;min-width:0;background:#090b24;border:1.5px solid #3a3f8f;border-radius:12px;color:#fff;font:700 17px Manrope,sans-serif;padding:12px}
 .code{text-align:center;letter-spacing:6px;text-transform:uppercase;font-size:24px;width:100%}
 .av,.tm,.x{border:0;border-radius:12px;height:46px;min-width:46px;background:var(--navy2);color:#fff;font:800 15px Manrope,sans-serif;cursor:pointer}
-.av{font-size:24px}.tm.t1{background:#1c4d8f}.tm.t0{background:#7a2bd6}
+.av{font-size:23px;min-width:66px;height:58px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;line-height:1.05}.av small{font-size:10px;font-weight:900;letter-spacing:.2px;margin-top:3px}.tm.t1{background:#1c4d8f}.tm.t0{background:#7a2bd6}
 .step{display:flex;align-items:center;justify-content:space-between}
 .step b{font-size:22px;min-width:40px;text-align:center}
 .step button{width:46px;height:46px;border:0;border-radius:12px;background:var(--navy2);color:#fff;font-size:22px;cursor:pointer}
@@ -63,6 +63,8 @@ const E=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"
 const R=a=>a[Math.floor(Math.random()*a.length)];
 const sh=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
 const AV=['🦊','🐙','🦄','🐸','🦉','🐼','🐯','🦖','👾','🐧'];
+const CHAR=[['Tilki','Kurnaz ve hızlı'],['Ahtapot','Zeki ve çok yönlü'],['Tekboynuz','Hayalperest ve cesur'],['Kurbağa','Neşeli ve enerjik'],['Baykuş','Bilge ve dikkatli'],['Panda','Sakin ve sevimli'],['Kaplan','Atılgan ve güçlü'],['Dinozor','Gürültülü ve eğlenceli'],['Uzaylı','Gizemli ve tuhaf'],['Penguen','Soğukkanlı ve komik']];
+const charName=a=>{const i=AV.indexOf(a);return i<0?'Karakter':CHAR[i][0]};
 const NM=['Ali','Ayşe','Mehmet','Zeynep','Can','Elif','Deniz','Burak','Selin','Kaan'];
 const MODES={yk:['Yasaklı Kelime','Kelimeyi yasaklı sözcükleri kullanmadan anlat. İki takım yarışır.'],gk:['Gizli Kelime','Biri farklı kelimeyi aldı. İpucu ver, kimin farklı olduğunu bul.'],s5:['Son 5 Saniye','5 saniyede üç şey say. Sorular kolaydan zora gider.'],ky:['Kim Yazdı?','Herkes gizlice cevap yazar. Kimin yazdığını tahmin edin, en komiğini seçin.'],cb:['Çizdim Bozdum','Çiz, tahmin et, yeniden çiz. Zincirin sonunda kelime ne hale geldi?'],ceza:['18+ Cezalı Mod','Yetişkinlere özel, flörtöz itiraflar ve eğlenceli cesaret görevleri. Pas geçmek serbest.']};
 const SOON={};
@@ -79,7 +81,7 @@ const SV=o=>{try{localStorage.setItem('kk',JSON.stringify(o))}catch(e){}};
 let S={players:NM.slice(0,6).map((n,i)=>({n,a:AV[i],t:i%2,s:0})),mode:'yk',rounds:3,dur:60,room:null,msg:''},G={},T=null;
 const app=document.getElementById('app');
 const hd=t=>`<div class="top"><button class="back" data-a="home" aria-label="Geri">←</button><h2>${t}</h2></div>`;
-const sb=()=>`<div class="sb">${S.players.map(p=>`<span>${p.a} ${E(p.n)} · ${p.s}</span>`).join('')}</div>`;
+const sb=()=>`<div class="sb">${S.players.map(p=>`<span>${p.a} ${charName(p.a)} · ${E(p.n)} · ${p.s}</span>`).join('')}</div>`;
 function draw(h){clearInterval(T);app.innerHTML=h;window.scrollTo(0,0);if(typeof NET!=='undefined'&&NET.host)netSendScreen()}
 const V={
 home(){draw(`<div class="hero"><i></i><i></i><i></i><h1>KAOS<br>KARTLARI</h1></div><p class="mu ctr">Arkadaşlarınla oyna, kuralları kaosa çevir.</p>
@@ -92,7 +94,7 @@ joinv(){draw(hd('Online Odaya Katıl')+`<input class="pl input" id="jn" maxlengt
 setup(){const yk=S.mode=='yk';draw(hd(S.room?'Oda '+S.room:'Oyun Kur')+(S.room?`<div class="note">Bu oda bir simülasyon: başka telefonlar bağlanamaz. Gerçek online oda Aşama 4’te gelecek. Şimdilik herkes bu telefonu kullanır.</div>`:'')+
 `<div class="chips">${Object.keys(MODES).map(k=>`<button class="chip ${S.mode==k?'on':''}" data-a="pm" data-m="${k}">${MODES[k][0]}</button>`).join('')}${Object.values(SOON).map(m=>`<button class="chip" disabled>${m[0]}</button>`).join('')}</div>
 ${yk?`<button class="chip ${S.chaos?'on':''}" data-a="kaos">🌀 Kaos Kartları ${S.chaos?'açık':'kapalı'}</button>`:''}<div class="pan step"><span>Tur sayısı</span><span class="step"><button data-a="rd" data-d="-1">−</button><b>${S.rounds}</b><button data-a="rd" data-d="1">+</button></span></div>
-<div class="pan"><p class="mu" style="margin-bottom:10px">Oyuncular (${S.players.length}/10, en az 5)</p>${S.players.map((p,i)=>`<div class="pl"><button class="av" data-a="av" data-i="${i}">${p.a}</button><input data-i="${i}" value="${E(p.n)}" maxlength="12">${yk?`<button class="tm t${p.t}" data-a="tm" data-i="${i}">${p.t?'Takım B':'Takım A'}</button>`:''}<button class="x" data-a="rm" data-i="${i}" aria-label="Çıkar">✕</button></div>`).join('')}<button class="b s" data-a="add" ${S.players.length>=10?'disabled':''}>Oyuncu ekle</button></div>${S.msg?`<div class="note">${S.msg}</div>`:''}<button class="b" data-a="start">Oyunu Başlat</button>`);S.msg=''}
+<div class="pan"><p class="mu" style="margin-bottom:10px">Oyuncular (${S.players.length}/10, en az 5)</p>${S.players.map((p,i)=>`<div class="pl"><button class="av" data-a="av" data-i="${i}">${p.a}<small>${charName(p.a)}</small></button><input data-i="${i}" value="${E(p.n)}" maxlength="12">${yk?`<button class="tm t${p.t}" data-a="tm" data-i="${i}">${p.t?'Takım B':'Takım A'}</button>`:''}<button class="x" data-a="rm" data-i="${i}" aria-label="Çıkar">✕</button></div>`).join('')}<button class="b s" data-a="add" ${S.players.length>=10?'disabled':''}>Oyuncu ekle</button></div>${S.msg?`<div class="note">${S.msg}</div>`:''}<button class="b" data-a="start">Oyunu Başlat</button>`);S.msg=''}
 };
 
 const NET={client:null,channel:null,host:false,code:null,id:localStorage.getItem('kk_net_id')||('p'+Math.random().toString(36).slice(2,11)),players:[],started:false,mode:'yk'};
