@@ -66,6 +66,35 @@ body[data-theme="pink"]{--v:#df4fa8;--n:#ff9bd5;--navy:#2b1029;--navy2:#45183f;b
 body.no-motion *,body.no-motion *:before,body.no-motion *:after{animation:none!important;transition:none!important}
 @media(max-width:360px){#app{padding-left:13px;padding-right:13px}.gamebar{margin-left:-13px;margin-right:-13px;padding-left:13px;padding-right:13px}}
 @media (prefers-reduced-motion:reduce){.card{animation:none}}
+
+/* KAOS KARTLARI — neon masaüstü/telefon arayüzü */
+body{background:radial-gradient(ellipse at 50% 0%,#37105f 0%,#120a2a 38%,#070611 78%);background-attachment:fixed}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;background:radial-gradient(circle at 8% 24%,#8a22ff22 0 2px,transparent 3px),radial-gradient(circle at 92% 68%,#ec38ff22 0 2px,transparent 3px),linear-gradient(120deg,transparent 46%,#8a2bff0c 47%,transparent 49%);background-size:130px 130px,170px 170px,100% 100%}
+#app{max-width:560px;padding:16px 16px 42px;gap:14px}
+.hero{height:210px;margin:0 0 4px;isolation:isolate}
+.hero i{width:108px;height:146px;border-radius:17px;border:2px solid #b74aff;background:linear-gradient(145deg,#271044,#0b0820 75%);box-shadow:0 0 25px #a22aff88,inset 0 0 18px #9b37ff22}
+.hero i:nth-child(1){transform:rotate(-17deg) translateX(-72px)}
+.hero i:nth-child(2){transform:rotate(17deg) translateX(72px)}
+.hero i:nth-child(3){border-color:#ff64df;box-shadow:0 0 32px #e43bff88,inset 0 0 18px #d947ff33}
+.hero h1{font-size:clamp(34px,10vw,48px);line-height:1.02;letter-spacing:-1.8px;color:#fff;text-shadow:0 3px 0 #421078,0 0 10px #d05cff,0 0 28px #a52cff}
+.b{border:1px solid #d59aff66;border-radius:17px;background:linear-gradient(135deg,#a12cff,#6410bb 58%,#390b7b);box-shadow:0 7px 0 #26064d,0 12px 25px #7b22dc55,inset 0 1px 0 #ffffff66}
+.b.s{background:linear-gradient(145deg,#20123c,#100c25);border:1px solid #8842c9;box-shadow:0 5px 0 #080513,inset 0 1px 0 #ffffff1c}
+.b.g{background:#110b20;border:1px solid #553078;box-shadow:none}
+.top{padding:5px 0 8px}
+.top h2{font-size:clamp(18px,5vw,23px);text-shadow:0 0 16px #b044ff88}
+.back{background:linear-gradient(145deg,#291448,#120b25);border:1px solid #9e50e4;color:#f4dfff}
+.card{background:radial-gradient(ellipse at 50% 0%,#42206a,#17102f 64%,#0d0a20);border:1.5px solid #c16aff;border-radius:22px;box-shadow:0 0 0 3px #6719a833,0 14px 35px #0009,0 0 24px #a22cff44}
+.pan{background:linear-gradient(145deg,#1d1234ee,#0c0a1fee);border:1px solid #7843a5;box-shadow:0 10px 28px #0007,inset 0 1px 0 #ffffff13}
+.chip{background:linear-gradient(145deg,#211238,#100b20);border-color:#70409a}
+.chip.on{background:linear-gradient(135deg,#a52fff,#5b16b7);border-color:#e0a8ff;box-shadow:0 0 16px #a52fff88}
+.pl input,.code{background:#0c081a;border-color:#70409a}
+.gamebar{background:#090512ee;border-color:#8e39c566}
+.gamebrand{font-size:13px;color:#fff;text-shadow:0 0 12px #bf59ff}
+.note{background:#2a160d;border-color:#e9a13d}
+.lead{border-color:#4c2c69}
+.sb span{background:linear-gradient(135deg,#281441,#120d25);border:1px solid #62388a}
+@media(min-width:700px){#app{max-width:760px;padding-top:24px}.hero{height:240px}.hero h1{font-size:54px}.b{min-height:58px}}
+@media(max-width:390px){#app{padding-left:13px;padding-right:13px}.hero{height:185px}.hero i{width:88px;height:126px}.hero i:nth-child(1){transform:rotate(-17deg) translateX(-59px)}.hero i:nth-child(2){transform:rotate(17deg) translateX(59px)}}
 </style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head><body><div id="app"></div>
 <script>
@@ -97,7 +126,7 @@ const hd=t=>`<div class="top"><button class="back" data-a="back" aria-label="Men
 const sb=()=>`<div class="sb">${S.players.map(p=>`<span>${avatarHTML(p.a)} ${charName(p.a)} · ${E(p.n)} · ${p.s}</span>`).join('')}</div>`;
 function draw(h){clearInterval(T);if(S.playing&&!S.paused)S.lastHTML=h;const bar=S.playing&&!S.paused?'<div class="gamebar"><span class="gamebrand">KAOS <i>KARTLARI</i></span><div class="gamebar-actions"><button data-a="pause" aria-label="Menü">☰</button><button data-a="settings" aria-label="Ayarlar">⚙</button></div></div>':'';app.innerHTML=bar+h;window.scrollTo(0,0);if(typeof NET!=='undefined'&&NET.host)netSendScreen()}
 const V={
-home(){draw(`<div class="hero"><i></i><i></i><i></i><h1>KAOS<br>KARTLARI</h1></div><p class="mu ctr">Arkadaşlarınla oyna, kuralları kaosa çevir.</p>
+home(){draw(`<div class="hero"><i></i><i></i><i></i><h1>KAOS<br>KARTLARI</h1></div><p class="mu ctr" style="font-weight:800;letter-spacing:.5px;text-shadow:0 0 12px #a52cff">ARKADAŞLARINLA KAOSU BAŞLAT!</p>
 <button class="b" data-a="quick">Hızlı Oyna</button><button class="b s" data-a="create">Oda Oluştur</button><button class="b s" data-a="joinv">Odaya Katıl</button><button class="b s" data-a="setup">Aynı Telefonda Oyna</button>
 <div class="row2"><button class="b s" data-a="modes">Oyun Modları</button><button class="b s" data-a="stats">İstatistikler</button></div><button class="b g" data-a="settings">Ayarlar</button>`)},
 modes(){draw(hd('Oyun Modları')+Object.values(MODES).map(m=>`<div class="pan"><b>${m[0]}</b> <span class="tag">Oynanabilir</span><p class="mu">${m[1]}</p></div>`).join('')+Object.values(SOON).map(m=>`<div class="pan"><b>${m[0]}</b> <span class="tag so">Yakında · ${m[1]}</span></div>`).join('')+`<button class="b" data-a="setup">Oyun Kur</button>`)},
