@@ -80,7 +80,7 @@ let S={players:NM.slice(0,6).map((n,i)=>({n,a:AV[i],t:i%2,s:0})),mode:'yk',round
 const app=document.getElementById('app');
 const hd=t=>`<div class="top"><button class="back" data-a="home" aria-label="Geri">←</button><h2>${t}</h2></div>`;
 const sb=()=>`<div class="sb">${S.players.map(p=>`<span>${p.a} ${E(p.n)} · ${p.s}</span>`).join('')}</div>`;
-function draw(h){clearInterval(T);app.innerHTML=h;window.scrollTo(0,0)}
+function draw(h){clearInterval(T);app.innerHTML=h;window.scrollTo(0,0);if(typeof NET!=='undefined'&&NET.host)netSendScreen()}
 const V={
 home(){draw(`<div class="hero"><i></i><i></i><i></i><h1>KAOS<br>KARTLARI</h1></div><p class="mu ctr">Arkadaşlarınla oyna, kuralları kaosa çevir.</p>
 <button class="b" data-a="quick">Hızlı Oyna</button><button class="b s" data-a="create">Oda Oluştur</button><button class="b s" data-a="joinv">Odaya Katıl</button><button class="b s" data-a="setup">Aynı Telefonda Oyna</button>
