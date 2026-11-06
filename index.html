@@ -55,7 +55,8 @@ h2{font-size:22px}
 .tag.so{background:#3a2d12;color:#ffd58a}
 .ctr{text-align:center}
 @media (prefers-reduced-motion:reduce){.card{animation:none}}
-</style></head><body><div id="app"></div>
+</style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head><body><div id="app"></div>
 <script>
 let audioCtx=null;function sfx(kind='tap'){try{if(S.sound===false)return;audioCtx=audioCtx||new(window.AudioContext||window.webkitAudioContext)();if(audioCtx.state==='suspended')audioCtx.resume();const now=audioCtx.currentTime;const seq=kind==='good'?[660,880]:kind==='bad'?[220,165]:kind==='win'?[523,659,784,1046]:[420];seq.forEach((hz,i)=>{const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=kind==='bad'?'triangle':'sine';o.frequency.setValueAtTime(hz,now+i*.085);g.gain.setValueAtTime(.0001,now+i*.085);g.gain.exponentialRampToValueAtTime(.12,now+i*.085+.012);g.gain.exponentialRampToValueAtTime(.0001,now+i*.085+.13);o.connect(g);g.connect(audioCtx.destination);o.start(now+i*.085);o.stop(now+i*.085+.15)})}catch(e){}}
 const E=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -86,19 +87,41 @@ home(){draw(`<div class="hero"><i></i><i></i><i></i><h1>KAOS<br>KARTLARI</h1></d
 <div class="row2"><button class="b s" data-a="modes">Oyun Modları</button><button class="b s" data-a="stats">İstatistikler</button></div><button class="b g" data-a="settings">Ayarlar</button>`)},
 modes(){draw(hd('Oyun Modları')+Object.values(MODES).map(m=>`<div class="pan"><b>${m[0]}</b> <span class="tag">Oynanabilir</span><p class="mu">${m[1]}</p></div>`).join('')+Object.values(SOON).map(m=>`<div class="pan"><b>${m[0]}</b> <span class="tag so">Yakında · ${m[1]}</span></div>`).join('')+`<button class="b" data-a="setup">Oyun Kur</button>`)},
 stats(){const s=ST();draw(hd('İstatistikler')+(s.g?`<div class="pan"><div class="lead"><span>Oynanan oyun</span><span>${s.g}</span></div>${Object.keys(MODES).map(k=>`<div class="lead"><span>${MODES[k][0]}</span><span>${(s.m||{})[k]||0}</span></div>`).join('')}<div class="lead"><span>En yüksek puan</span><span>${s.b||0} (${E(s.bn||'-')})</span></div></div>`:`<p class="mu">Henüz oyun yok. Bir oyun bitir, istatistikler burada görünsün.</p><button class="b" data-a="quick">Hızlı Oyna</button>`))},
-settings(){draw(hd('Ayarlar')+`<div class="pan"><p class="mu">Ses efektleri</p><button class="b s" data-a="sound">${S.sound===false?'Sesleri aç':'Sesleri kapat'}</button></div><div class="pan"><p class="mu">Yasaklı Kelime tur süresi (saniye)</p><div class="step"><button data-a="du" data-d="-15">−</button><b>${S.dur}</b><button data-a="du" data-d="15">+</button></div></div><button class="b s" data-a="reset">İstatistikleri sıfırla</button><p class="mu">Ses efektleri oyun içinde çalışır. İlk dokunuşla etkinleşir.</p>`)},
-joinv(){draw(hd('Odaya Katıl')+`<input class="code" id="jc" maxlength="5" placeholder="KODU YAZ"><button class="b" data-a="join">Katıl</button>${S.msg?`<div class="note">${S.msg}</div>`:''}`)},
+settings(){const n=JSON.parse(localStorage.getItem('kk_net_cfg')||'{}');draw(hd('Ayarlar')+`<div class="pan"><p class="mu">Ses efektleri</p><button class="b s" data-a="sound">${S.sound===false?'Sesleri aç':'Sesleri kapat'}</button></div><div class="pan"><b>Online oda bağlantısı</b><p class="mu">Supabase Project URL ve anon/publishable key bilgilerini gir. Bu bilgiler cihazında saklanır.</p><input id="sburl" placeholder="https://....supabase.co" value="${E(n.url||'')}" style="width:100%;margin:8px 0;background:#090b24;border:1px solid #3a3f8f;border-radius:10px;color:white;padding:12px"><input id="sbkey" placeholder="Supabase anon / publishable key" value="${E(n.key||'')}" style="width:100%;background:#090b24;border:1px solid #3a3f8f;border-radius:10px;color:white;padding:12px"><button class="b" data-a="netSave" style="margin-top:10px">Bağlantıyı kaydet</button><p class="mu">Supabase Dashboard → Project Settings → API. Service role key kullanma.</p></div><div class="pan"><p class="mu">Yasaklı Kelime tur süresi (saniye)</p><div class="step"><button data-a="du" data-d="-15">−</button><b>${S.dur}</b><button data-a="du" data-d="15">+</button></div></div><button class="b s" data-a="reset">İstatistikleri sıfırla</button>`)},
+joinv(){draw(hd('Online Odaya Katıl')+`<input class="pl input" id="jn" maxlength="12" placeholder="Oyuncu adın" value="${E(localStorage.getItem('kk_nick')||'Oyuncu')}"><input class="code" id="jc" maxlength="5" placeholder="5 HANELİ ODA KODU"><button class="b" data-a="join">Online odaya katıl</button>${S.msg?`<div class="note">${E(S.msg)}</div>`:''}<p class="mu">Önce Ayarlar bölümünden Supabase bağlantısını kaydet.</p>`)},
 setup(){const yk=S.mode=='yk';draw(hd(S.room?'Oda '+S.room:'Oyun Kur')+(S.room?`<div class="note">Bu oda bir simülasyon: başka telefonlar bağlanamaz. Gerçek online oda Aşama 4’te gelecek. Şimdilik herkes bu telefonu kullanır.</div>`:'')+
 `<div class="chips">${Object.keys(MODES).map(k=>`<button class="chip ${S.mode==k?'on':''}" data-a="pm" data-m="${k}">${MODES[k][0]}</button>`).join('')}${Object.values(SOON).map(m=>`<button class="chip" disabled>${m[0]}</button>`).join('')}</div>
 ${yk?`<button class="chip ${S.chaos?'on':''}" data-a="kaos">🌀 Kaos Kartları ${S.chaos?'açık':'kapalı'}</button>`:''}<div class="pan step"><span>Tur sayısı</span><span class="step"><button data-a="rd" data-d="-1">−</button><b>${S.rounds}</b><button data-a="rd" data-d="1">+</button></span></div>
 <div class="pan"><p class="mu" style="margin-bottom:10px">Oyuncular (${S.players.length}/10, en az 5)</p>${S.players.map((p,i)=>`<div class="pl"><button class="av" data-a="av" data-i="${i}">${p.a}</button><input data-i="${i}" value="${E(p.n)}" maxlength="12">${yk?`<button class="tm t${p.t}" data-a="tm" data-i="${i}">${p.t?'Takım B':'Takım A'}</button>`:''}<button class="x" data-a="rm" data-i="${i}" aria-label="Çıkar">✕</button></div>`).join('')}<button class="b s" data-a="add" ${S.players.length>=10?'disabled':''}>Oyuncu ekle</button></div>${S.msg?`<div class="note">${S.msg}</div>`:''}<button class="b" data-a="start">Oyunu Başlat</button>`);S.msg=''}
 };
+
+const NET={client:null,channel:null,host:false,code:null,id:localStorage.getItem('kk_net_id')||('p'+Math.random().toString(36).slice(2,11)),players:[],started:false};
+localStorage.setItem('kk_net_id',NET.id);
+function netConfig(){try{return JSON.parse(localStorage.getItem('kk_net_cfg')||'{}')}catch(e){return{}}}
+function netSave(){const url=(document.getElementById('sburl')?.value||'').trim(),key=(document.getElementById('sbkey')?.value||'').trim();if(!/^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(url)||key.length<20){S.msg='Supabase URL veya anon key hatalı.';return V.settings()}localStorage.setItem('kk_net_cfg',JSON.stringify({url,key}));S.msg='Bağlantı bilgileri kaydedildi.';V.settings()}
+function netName(){const n=(document.getElementById('jn')?.value||localStorage.getItem('kk_nick')||'Oyuncu').trim().slice(0,12)||'Oyuncu';localStorage.setItem('kk_nick',n);return n}
+function netCreate(){NET.host=true;NET.code=Array.from({length:5},()=>R([...'ABCDEFGHJKLMNPRSTUVYZ23456789'])).join('');netConnect(NET.code,netName())}
+function netJoin(){const code=(document.getElementById('jc')?.value||'').trim().toUpperCase();if(code.length!==5){S.msg='Oda kodu 5 karakter olmalı.';return V.joinv()}NET.host=false;NET.code=code;netConnect(code,netName())}
+function netConnect(code,name){const cfg=netConfig();if(!cfg.url||!cfg.key||!window.supabase){S.msg='Önce Ayarlar bölümünden Supabase URL ve anon key bilgilerini kaydet.';return V.joinv()}try{if(NET.channel)NET.client.removeChannel(NET.channel);NET.client=window.supabase.createClient(cfg.url,cfg.key);NET.players=[];NET.started=false;NET.channel=NET.client.channel('kaos-'+code,{config:{presence:{key:NET.id},broadcast:{self:false}}});
+NET.channel.on('presence',{event:'sync'},()=>{NET.players=Object.values(NET.channel.presenceState()).flat().filter(p=>p&&p.id);if(NET.host&&!NET.started){S.players=netRoster();netLobby()}});
+NET.channel.on('broadcast',{event:'action'},({payload})=>{if(!NET.host||!payload)return;const fn=A[payload.action];if(fn)fn(payload.data||{})});
+NET.channel.on('broadcast',{event:'screen'},({payload})=>{if(!NET.host&&payload?.html){app.innerHTML=payload.html;window.scrollTo(0,0)}});
+NET.channel.on('broadcast',{event:'screen-request'},()=>{if(NET.host)netSendScreen()});
+NET.channel.on('broadcast',{event:'game-start'},({payload})=>{if(NET.host||!payload)return;NET.started=true;S.mode=payload.mode;S.rounds=payload.rounds;S.dur=payload.dur;S.players=payload.players;S.chaos=payload.chaos;begin()});
+NET.channel.subscribe(async status=>{if(status==='SUBSCRIBED'){await NET.channel.track({id:NET.id,name:name,avatar:AV[NET.players.length%AV.length],host:NET.host});if(NET.host){S.players=netRoster();netLobby()}else{netLobby();netSend('screen-request',{})}}else if(status==='CHANNEL_ERROR'||status==='TIMED_OUT'){S.msg='Odaya bağlanılamadı. Supabase Realtime ayarlarını kontrol et.';V.joinv()}})}catch(e){S.msg='Bağlantı hatası: '+e.message;V.joinv()}}
+function netRoster(){return NET.players.slice(0,10).map((p,i)=>({n:p.name||'Oyuncu',a:p.avatar||AV[i%AV.length],t:i%2,s:0}))}
+function netSend(event,payload){if(NET.channel)NET.channel.send({type:'broadcast',event:event,payload:payload})}
+function netSendScreen(){if(NET.host&&NET.channel)netSend('screen',{html:app.innerHTML})}
+function netLobby(){const players=NET.players;draw(hd('Online Oda')+'<div class="card"><p class="mu">ODA KODUN</p><div class="w" style="font-size:42px;letter-spacing:8px">'+NET.code+'</div><button class="b s" data-a="copyRoom">Kodu kopyala</button></div><div class="pan"><b>Oyuncular ('+players.length+'/10)</b>'+players.map(p=>'<div class="lead"><span>'+E(p.avatar||'🎮')+' '+E(p.name||'Oyuncu')+'</span><span class="tag">'+(p.host?'Kurucu':'Bağlandı')+'</span></div>').join('')+'</div><div class="note">Online sürüm: Yasaklı Kelime. Oyun ekranı ve tur işlemleri oda üyeleriyle eş zamanlı paylaşılır. En az 5 oyuncu gerekir.</div>'+(NET.host?'<button class="b" data-a="startOnline" '+(players.length<5?'disabled':'')+'>Oyunu başlat</button>':'<p class="mu ctr">Oda kurucusunun başlatması bekleniyor.</p>')+'<button class="b g" data-a="leaveOnline">Odadan ayrıl</button>')}
+function netStart(){const players=netRoster();if(players.length<5){netLobby();return}S.players=players;S.mode='yk';S.rounds=3;S.dur=60;S.chaos=false;NET.started=true;netSend('game-start',{mode:S.mode,rounds:S.rounds,dur:S.dur,players:S.players,chaos:S.chaos});begin()}
+function netLeave(){if(NET.channel)NET.client.removeChannel(NET.channel);NET.channel=null;NET.host=false;NET.code=null;NET.players=[];NET.started=false;V.home()}
+
 const A={
 home(){S.room=null;S.msg='';V.home()},modes:V.modes,stats:V.stats,settings:V.settings,joinv(){S.msg='';V.joinv()},
 setup(){S.room=null;V.setup()},
 quick(){S.room=null;S.mode=R(Object.keys(MODES));S.rounds=2;begin()},
-create(){S.room=Array.from({length:5},()=>R([...'ABCDEFGHJKLMNPRSTUVYZ23456789'])).join('');V.setup()},
-join(){const c=document.getElementById('jc').value.trim();S.msg=c.length<5?'Oda kodu 5 karakter olmalı.':'Gerçek online bağlantı henüz yok (Aşama 4). Şimdilik “Aynı Telefonda Oyna” ile oyna.';V.joinv()},
+create(){netCreate()},
+join(){netJoin()},
 pm(d){S.mode=d.m;V.setup()},rd(d){S.rounds=Math.max(1,Math.min(8,S.rounds+ +d.d));V.setup()},
 kaos(){S.chaos=!S.chaos;V.setup()},du(d){S.dur=Math.max(30,Math.min(120,S.dur+ +d.d));V.settings()},
 av(d){const p=S.players[d.i];p.a=AV[(AV.indexOf(p.a)+1)%AV.length];V.setup()},
@@ -107,9 +130,10 @@ rm(d){if(S.players.length<=5){S.msg='En az 5 oyuncu gerekli.'}else S.players.spl
 add(){const n=S.players.length;S.players.push({n:NM[n]||'Oyuncu '+(n+1),a:AV[n%10],t:n%2,s:0});V.setup()},
 reset(){SV({});V.stats()},
 sound(){S.sound=S.sound===false?true:false;sfx('good');V.settings()},
+netSave(){netSave()},copyRoom(){if(navigator.clipboard)navigator.clipboard.writeText(NET.code)},leaveOnline(){netLeave()},startOnline(){netStart()},
 start(){begin()},
 // Yasaklı Kelime
-ykgo(){G.left=S.dur;G.gain=0;if(!G.deck.length)G.deck=sh(YK);G.card=G.deck.pop();ykPlay();T=setInterval(()=>{G.left--;const e=document.getElementById('tm');if(e)e.textContent=G.left;if(G.left<=0){clearInterval(T);ykEnd()}},1000)},
+ykgo(){G.left=S.dur;G.gain=0;if(!G.deck.length)G.deck=sh(YK);G.card=G.deck.pop();ykPlay();T=setInterval(()=>{G.left--;const e=document.getElementById('tm');if(e)e.textContent=G.left;if(NET.host)netSendScreen();if(G.left<=0){clearInterval(T);ykEnd()}},1000)},
 yok(){G.gain++;sfx('good');ykNext()},yno(){G.gain--;sfx('bad');ykNext()},ypas(){ykNext()},
 yknext(){G.i++;G.i>=G.total?finish():ykReady()},
 // Gizli Kelime
@@ -162,7 +186,7 @@ function finish(){sfx('win');const s=ST();s.g=(s.g||0)+1;s.m=s.m||{};s.m[S.mode]
 const ps=[...S.players].sort((a,b)=>b.s-a.s);const w=ps.filter(p=>p.s==ps[0].s);
 const tw=S.mode=='yk'?`<p class="mu ctr">Takım A ${G.ts[0]} – ${G.ts[1]} Takım B</p>`:'';
 draw(`<h2 class="ctr">Kazanan</h2><div class="card"><div style="font-size:64px">${w.map(p=>p.a).join(' ')}</div><div class="w">${w.map(p=>E(p.n)).join(' & ')}</div><p class="mu">${ps[0].s} puan</p></div>${tw}<div class="pan">${ps.map((p,i)=>`<div class="lead"><span>${i+1}. ${p.a} ${E(p.n)}</span><span>${p.s}</span></div>`).join('')}</div><button class="b" data-a="again">Yeniden oyna</button><button class="b s" data-a="home">Ana menü</button>`)}
-document.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(b&&!b.disabled&&A[b.dataset.a]){if(!['yok','yno','sound'].includes(b.dataset.a))sfx('tap');A[b.dataset.a](b.dataset)}});
+document.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(!b||b.disabled||!A[b.dataset.a])return;if(NET.channel&&!NET.host&&!['leaveOnline','copyRoom'].includes(b.dataset.a)){netSend('action',{action:b.dataset.a,data:{...b.dataset}});return}if(!['yok','yno','sound'].includes(b.dataset.a))sfx('tap');A[b.dataset.a](b.dataset)});
 document.addEventListener('input',e=>{const t=e.target;if(t.tagName=='INPUT'&&t.dataset.i!=null)S.players[+t.dataset.i].n=t.value});
 try{const s=ST();}catch(e){}
 V.home();
