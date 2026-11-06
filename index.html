@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="tr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>KAOS KARTLARI</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Unbounded:wght@700;900&display=swap">
+<style>
+:root{color-scheme:dark;--bg:#07060f;--navy:#0e1233;--navy2:#181d4d;--v:#8b3dff;--n:#c58bff;--tx:#f3eeff;--mu:#9a95c4;--ok:#35e0a1;--no:#ff5c7a;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:radial-gradient(120% 55% at 50% -10%,#3b1180 0%,transparent 62%),var(--bg);color:var(--tx);font:500 17px/1.4 Manrope,system-ui,sans-serif;min-height:100vh}
+#app{max-width:480px;margin:0 auto;padding:18px 18px 40px;display:flex;flex-direction:column;gap:12px}
+h1,h2{font-family:Unbounded,Manrope,sans-serif;margin:0;line-height:1.05}
+h2{font-size:22px}
+.mu{color:var(--mu);margin:0}
+.hero{position:relative;height:190px;display:grid;place-items:center;margin-top:8px}
+.hero i{position:absolute;width:96px;height:132px;border-radius:14px;border:2px solid var(--n);background:linear-gradient(160deg,var(--navy2),#0a0c26);box-shadow:0 0 24px #8b3dff66}
+.hero i:nth-child(1){transform:rotate(-16deg) translateX(-70px)}
+.hero i:nth-child(2){transform:rotate(14deg) translateX(70px)}
+.hero i:nth-child(3){transform:rotate(-2deg);border-color:#ff7bf0;box-shadow:0 0 30px #ff7bf055}
+.hero h1{position:relative;font-size:38px;font-weight:900;text-align:center;text-shadow:0 0 22px #b45cff;letter-spacing:.5px}
+.b{font:800 18px Manrope,sans-serif;color:#fff;border:0;border-radius:16px;padding:17px 18px;min-height:56px;background:linear-gradient(135deg,#9a4dff,#6a1fe0);box-shadow:0 0 22px #8b3dff55;cursor:pointer;width:100%;text-align:center}
+.b:active{transform:scale(.98)}
+.b.s{background:var(--navy2);box-shadow:none;border:1.5px solid #3a3f8f}
+.b.g{background:none;box-shadow:none;color:var(--mu)}
+.b.ok{background:linear-gradient(135deg,#2fd896,#14a874);color:#04150e;box-shadow:none}
+.b.no{background:linear-gradient(135deg,#ff5c7a,#d12a4e);box-shadow:none}
+.b[disabled]{opacity:.4}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.top{display:flex;align-items:center;gap:12px}
+.back{background:var(--navy2);color:#fff;border:0;border-radius:12px;width:46px;height:46px;font-size:22px;cursor:pointer}
+.card{background:linear-gradient(160deg,var(--navy2),var(--navy));border:2px solid var(--n);border-radius:20px;padding:22px 18px;text-align:center;box-shadow:0 0 28px #8b3dff55;animation:flip .45s ease}
+@keyframes flip{from{transform:rotateY(90deg);opacity:0}to{transform:none;opacity:1}}
+.card .w{font:900 34px Unbounded,sans-serif;margin-bottom:14px;word-break:break-word}
+.card .f{display:grid;gap:8px}
+.card .f span{background:#2a0f3d;border:1px solid #ff5c7a88;border-radius:10px;padding:8px;font-weight:800;color:#ffb3c1}
+.big{font:900 64px Unbounded,sans-serif;text-align:center;text-shadow:0 0 24px #b45cff}
+.pan{background:var(--navy);border:1.5px solid #2b3070;border-radius:16px;padding:14px}
+.sb{display:flex;flex-wrap:wrap;gap:8px}
+.sb span{background:var(--navy2);border-radius:999px;padding:6px 12px;font-weight:700;font-size:15px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:var(--navy2);color:#fff;border:1.5px solid #3a3f8f;border-radius:999px;padding:10px 14px;font:700 15px Manrope,sans-serif;cursor:pointer}
+.chip.on{background:var(--v);border-color:var(--n)}
+.chip[disabled]{opacity:.4}
+.pl{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+.pl input,.code{flex:1;min-width:0;background:#090b24;border:1.5px solid #3a3f8f;border-radius:12px;color:#fff;font:700 17px Manrope,sans-serif;padding:12px}
+.code{text-align:center;letter-spacing:6px;text-transform:uppercase;font-size:24px;width:100%}
+.av,.tm,.x{border:0;border-radius:12px;height:46px;min-width:46px;background:var(--navy2);color:#fff;font:800 15px Manrope,sans-serif;cursor:pointer}
+.av{font-size:24px}.tm.t1{background:#1c4d8f}.tm.t0{background:#7a2bd6}
+.step{display:flex;align-items:center;justify-content:space-between}
+.step b{font-size:22px;min-width:40px;text-align:center}
+.step button{width:46px;height:46px;border:0;border-radius:12px;background:var(--navy2);color:#fff;font-size:22px;cursor:pointer}
+.note{background:#2a1a05;border:1px solid #c98a1b;border-radius:12px;padding:10px 12px;color:#ffd58a;font-size:15px}
+.lead{display:flex;justify-content:space-between;padding:10px 4px;border-bottom:1px solid #2b3070;font-weight:700}
+.tag{font-size:13px;border-radius:999px;padding:3px 10px;background:#1b3d34;color:var(--ok)}
+.tag.so{background:#3a2d12;color:#ffd58a}
+.ctr{text-align:center}
+@media (prefers-reduced-motion:reduce){.card{animation:none}}
+</style></head><body><div id="app"></div>
+<script>
+const E=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const R=a=>a[Math.floor(Math.random()*a.length)];
+const sh=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const AV=['🦊','🐙','🦄','🐸','🦉','🐼','🐯','🦖','👾','🐧'];
+const NM=['Ali','Ayşe','Mehmet','Zeynep','Can','Elif','Deniz','Burak','Selin','Kaan'];
+const MODES={yk:['Yasaklı Kelime','Kelimeyi yasaklı sözcükleri kullanmadan anlat. İki takım yarışır.'],gk:['Gizli Kelime','Biri farklı kelimeyi aldı. İpucu ver, kimin farklı olduğunu bul.'],s5:['Son 5 Saniye','5 saniyede üç şey say. Sorular kolaydan zora gider.'],ky:['Kim Yazdı?','Herkes gizlice cevap yazar. Kimin yazdığını tahmin edin, en komiğini seçin.'],cb:['Çizdim Bozdum','Çiz, tahmin et, yeniden çiz. Zincirin sonunda kelime ne hale geldi?']};
+const SOON={};
+const KY=['Bir pazar sabahı yapmaktan keyif aldığın saçma şey ne?','Süper gücün sadece 1 dakika çalışsa ne olurdu?','Telefonunun şarjı %1 iken ilk kime yazarsın?','Bu grubun en kötü şoförü kim ve neden?','Issız adaya sadece 3 şey götürebilsen ne götürürdün?','Gizlice sevdiğin en utanç verici şarkı hangisi?','Asla yapmayacağın en tuhaf iş ne?','Biyografi filmin adı ne olurdu?','Gece 3’te uyanınca aklına gelen ilk şey ne?','Bir günlüğüne görünmez olsan ilk ne yaparsın?'];
+const CB=['Kedi','Dondurma','Uzay gemisi','Bisiklet','Şemsiye','Balık','Güneş gözlüğü','Robot','Pizza','Dinozor','Roller coaster','Kale'];
+const TA='style="width:100%;height:96px;background:#090b24;border:1.5px solid #3a3f8f;border-radius:12px;color:#fff;font:700 17px Manrope,sans-serif;padding:12px"';
+const YK=[['Pizza','peynir','İtalyan','hamur','dilim'],['Plaj','deniz','kum','yaz','güneş'],['Doktor','hasta','hastane','ilaç','muayene'],['Kahve','fincan','çay','Türk','kafein'],['Bisiklet','pedal','tekerlek','sürmek','iki'],['Şemsiye','yağmur','ıslak','açmak','kapatmak'],['Sinema','film','bilet','mısır','perde'],['Asansör','kat','bina','düğme','yukarı'],['Düğün','gelin','damat','evlilik','nikah'],['Telefon','aramak','ekran','cep','mesaj'],['Uçak','havalimanı','kanat','pilot','uçmak'],['Pasta','doğum günü','mum','tatlı','krema'],['Ayna','yansıma','bakmak','cam','yüz'],['Kar','beyaz','kış','soğuk','kardan adam'],['Müze','tarih','sergi','eser','gezmek'],['Alarm','sabah','uyanmak','saat','çalmak']];
+const GK=[['Çay','Kahve'],['Deniz','Göl'],['Pizza','Lahmacun'],['Futbol','Basketbol'],['Otobüs','Tren'],['Sinema','Tiyatro'],['Gitar','Keman'],['Dondurma','Sorbe'],['Okul','Üniversite'],['Ayakkabı','Çorap'],['Kış','Sonbahar'],['Doktor','Hemşire']];
+const S5=[['3 meyve','3 renk','3 hayvan','3 şehir','3 sebze','3 içecek'],['3 araba markası','3 Türk yemeği','3 futbol takımı','3 dizi adı','3 deniz canlısı','3 meslek'],['3 Avrupa başkenti','A ile başlayan 3 ülke','3 müzik aleti','3 kitap yazarı','3 kemik adı','3 Osmanlı padişahı']];
+const KK=['Sadece üç kelimeyle anlat.','Konuşmadan, sadece mimikle anlat.','Her cümlenin sonuna “yani” de.','Gözlerini kapatarak anlat.','Fısıltıyla anlat.','Robot gibi konuş.','Tek ayak üstünde dur ve öyle anlat.','Sadece ses taklidi ve hareketle anlat.','Anlatırken “e” harfini kullanma.','Rakip takım sana ekstra bir yasaklı kelime seçer.'];
+const LV=['Kolay','Orta','Zor'];
+const ST=()=>{try{return JSON.parse(localStorage.getItem('kk')||'{}')}catch(e){return{}}};
+const SV=o=>{try{localStorage.setItem('kk',JSON.stringify(o))}catch(e){}};
+let S={players:NM.slice(0,6).map((n,i)=>({n,a:AV[i],t:i%2,s:0})),mode:'yk',rounds:3,dur:60,room:null,msg:''},G={},T=null;
+const app=document.getElementById('app');
+const hd=t=>`<div class="top"><button class="back" data-a="home" aria-label="Geri">←</button><h2>${t}</h2></div>`;
+const sb=()=>`<div class="sb">${S.players.map(p=>`<span>${p.a} ${E(p.n)} · ${p.s}</span>`).join('')}</div>`;
+function draw(h){clearInterval(T);app.innerHTML=h;window.scrollTo(0,0)}
+const V={
+home(){draw(`<div class="hero"><i></i><i></i><i></i><h1>KAOS<br>KARTLARI</h1></div><p class="mu ctr">Arkadaşlarınla oyna, kuralları kaosa çevir.</p>
+<button class="b" data-a="quick">Hızlı Oyna</button><button class="b s" data-a="create">Oda Oluştur</button><button class="b s" data-a="joinv">Odaya Katıl</button><button class="b s" data-a="setup">Aynı Telefonda Oyna</button>
+<div class="row2"><button class="b s" data-a="modes">Oyun Modları</button><button class="b s" data-a="stats">İstatistikler</button></div><button class="b g" data-a="settings">Ayarlar</button>`)},
+modes(){draw(hd('Oyun Modları')+Object.values(MODES).map(m=>`<div class="pan"><b>${m[0]}</b> <span class="tag">Oynanabilir</span><p class="mu">${m[1]}</p></div>`).join('')+Object.values(SOON).map(m=>`<div class="pan"><b>${m[0]}</b> <span class="tag so">Yakında · ${m[1]}</span></div>`).join('')+`<button class="b" data-a="setup">Oyun Kur</button>`)},
+stats(){const s=ST();draw(hd('İstatistikler')+(s.g?`<div class="pan"><div class="lead"><span>Oynanan oyun</span><span>${s.g}</span></div>${Object.keys(MODES).map(k=>`<div class="lead"><span>${MODES[k][0]}</span><span>${(s.m||{})[k]||0}</span></div>`).join('')}<div class="lead"><span>En yüksek puan</span><span>${s.b||0} (${E(s.bn||'-')})</span></div></div>`:`<p class="mu">Henüz oyun yok. Bir oyun bitir, istatistikler burada görünsün.</p><button class="b" data-a="quick">Hızlı Oyna</button>`))},
+settings(){draw(hd('Ayarlar')+`<div class="pan"><p class="mu">Yasaklı Kelime tur süresi (saniye)</p><div class="step"><button data-a="du" data-d="-15">−</button><b>${S.dur}</b><button data-a="du" data-d="15">+</button></div></div><button class="b s" data-a="reset">İstatistikleri sıfırla</button><p class="mu">Ses efektleri henüz yok. Aşama 5’te eklenecek.</p>`)},
+joinv(){draw(hd('Odaya Katıl')+`<input class="code" id="jc" maxlength="5" placeholder="KODU YAZ"><button class="b" data-a="join">Katıl</button>${S.msg?`<div class="note">${S.msg}</div>`:''}`)},
+setup(){const yk=S.mode=='yk';draw(hd(S.room?'Oda '+S.room:'Oyun Kur')+(S.room?`<div class="note">Bu oda bir simülasyon: başka telefonlar bağlanamaz. Gerçek online oda Aşama 4’te gelecek. Şimdilik herkes bu telefonu kullanır.</div>`:'')+
+`<div class="chips">${Object.keys(MODES).map(k=>`<button class="chip ${S.mode==k?'on':''}" data-a="pm" data-m="${k}">${MODES[k][0]}</button>`).join('')}${Object.values(SOON).map(m=>`<button class="chip" disabled>${m[0]}</button>`).join('')}</div>
+${yk?`<button class="chip ${S.chaos?'on':''}" data-a="kaos">🌀 Kaos Kartları ${S.chaos?'açık':'kapalı'}</button>`:''}<div class="pan step"><span>Tur sayısı</span><span class="step"><button data-a="rd" data-d="-1">−</button><b>${S.rounds}</b><button data-a="rd" data-d="1">+</button></span></div>
+<div class="pan"><p class="mu" style="margin-bottom:10px">Oyuncular (${S.players.length}/10, en az 5)</p>${S.players.map((p,i)=>`<div class="pl"><button class="av" data-a="av" data-i="${i}">${p.a}</button><input data-i="${i}" value="${E(p.n)}" maxlength="12">${yk?`<button class="tm t${p.t}" data-a="tm" data-i="${i}">${p.t?'Takım B':'Takım A'}</button>`:''}<button class="x" data-a="rm" data-i="${i}" aria-label="Çıkar">✕</button></div>`).join('')}<button class="b s" data-a="add" ${S.players.length>=10?'disabled':''}>Oyuncu ekle</button></div>${S.msg?`<div class="note">${S.msg}</div>`:''}<button class="b" data-a="start">Oyunu Başlat</button>`);S.msg=''}
+};
+const A={
+home(){S.room=null;S.msg='';V.home()},modes:V.modes,stats:V.stats,settings:V.settings,joinv(){S.msg='';V.joinv()},
+setup(){S.room=null;V.setup()},
+quick(){S.room=null;S.mode=R(Object.keys(MODES));S.rounds=2;begin()},
+create(){S.room=Array.from({length:5},()=>R([...'ABCDEFGHJKLMNPRSTUVYZ23456789'])).join('');V.setup()},
+join(){const c=document.getElementById('jc').value.trim();S.msg=c.length<5?'Oda kodu 5 karakter olmalı.':'Gerçek online bağlantı henüz yok (Aşama 4). Şimdilik “Aynı Telefonda Oyna” ile oyna.';V.joinv()},
+pm(d){S.mode=d.m;V.setup()},rd(d){S.rounds=Math.max(1,Math.min(8,S.rounds+ +d.d));V.setup()},
+kaos(){S.chaos=!S.chaos;V.setup()},du(d){S.dur=Math.max(30,Math.min(120,S.dur+ +d.d));V.settings()},
+av(d){const p=S.players[d.i];p.a=AV[(AV.indexOf(p.a)+1)%AV.length];V.setup()},
+tm(d){S.players[d.i].t^=1;V.setup()},
+rm(d){if(S.players.length<=5){S.msg='En az 5 oyuncu gerekli.'}else S.players.splice(d.i,1);V.setup()},
+add(){const n=S.players.length;S.players.push({n:NM[n]||'Oyuncu '+(n+1),a:AV[n%10],t:n%2,s:0});V.setup()},
+reset(){SV({});V.stats()},
+start(){begin()},
+// Yasaklı Kelime
+ykgo(){G.left=S.dur;G.gain=0;if(!G.deck.length)G.deck=sh(YK);G.card=G.deck.pop();ykPlay();T=setInterval(()=>{G.left--;const e=document.getElementById('tm');if(e)e.textContent=G.left;if(G.left<=0){clearInterval(T);ykEnd()}},1000)},
+yok(){G.gain++;ykNext()},yno(){G.gain--;ykNext()},ypas(){ykNext()},
+yknext(){G.i++;G.i>=G.total?finish():ykReady()},
+// Gizli Kelime
+gkshow(){const w=G.k==G.odd?G.o:G.w;draw(`<h2 class="ctr">${E(S.players[G.k].n)}, kelimen:</h2><div class="card"><div class="w">${E(w)}</div></div><p class="mu ctr">Kimseye gösterme.</p><button class="b" data-a="gknext">Gizle ve devam et</button>`)},
+gknext(){G.k++;G.k>=S.players.length?gkClue():gkReveal()},
+gkvote(){G.vk=0;G.votes=[];gkVote()},
+gkv(d){G.votes.push(+d.i);G.vk++;G.vk>=S.players.length?gkRes():gkVote()},
+gkafter(){G.r++;G.r>=S.rounds?finish():gkRound()},
+// Son 5 Saniye
+s5go(){let t=5;draw(`<p class="mu ctr">${E(G.p.n)} · ${LV[G.lvl]}</p><div class="card"><div class="w" style="font-size:26px">5 saniyede ${G.q} söyle!</div></div><div class="big" id="tm">5</div><button class="b ok" data-a="s5ok">Başardı (+${G.lvl+1})</button><button class="b no" data-a="s5no">Yapamadı</button>`);T=setInterval(()=>{t--;const e=document.getElementById('tm');if(e)e.textContent=t>0?t:'Süre doldu';if(t<=0)clearInterval(T)},1000)},
+s5ok(){G.p.s+=G.lvl+1;s5Next()},s5no(){s5Next()},
+kysave(){G.ans.push(document.getElementById('ka').value.trim()||'(boş)');G.k++;G.k>=S.players.length?kyShow():kyIn()},
+kyrev(){draw(`<h2>Sahipleri</h2><p class="mu">En komik cevaba dokun: sahibi +2 puan alır.</p>${G.ord.map(i=>`<button class="b s" data-a="kyfun" data-i="${i}">${E(G.ans[i])}<br><small>${S.players[i].a} ${E(S.players[i].n)}</small></button>`).join('')}`)},
+kyfun(d){S.players[+d.i].s+=2;G.r++;G.r>=S.rounds?finish():kyRound()},
+cbgo(){const k=G.k;if(k%2==0){const t=k==0?G.w:G.ch[k-1].v;draw(`<p class="mu ctr">${E(S.players[G.who[k]].n)}, çiz:</p><div class="card"><div class="w" style="font-size:26px">${E(t)}</div></div><canvas id="cv" style="width:100%;border-radius:16px;touch-action:none;background:#fff"></canvas><div class="row2"><button class="b s" data-a="cbclr">Temizle</button><button class="b" data-a="cbdone">Bitti</button></div>`);initCv()}else draw(`<p class="mu ctr">${E(S.players[G.who[k]].n)}, bu çizim ne?</p><img src="${G.ch[k-1].v}" style="width:100%;border-radius:16px"><textarea id="ka" maxlength="30" ${TA} placeholder="Tahminini yaz"></textarea><button class="b" data-a="cbguess">Tahmini kaydet</button>`)},
+cbclr(){initCv()},
+cbdone(){G.ch.push({v:document.getElementById('cv').toDataURL('image/jpeg',.6)});cbNext()},
+cbguess(){G.ch.push({v:document.getElementById('ka').value.trim()||'(boş)'});cbNext()},
+cbfun(d){S.players[+d.i].s+=2;G.r++;G.r>=S.rounds?finish():cbRound()},
+again(){S.players.forEach(p=>p.s=0);begin()}
+};
+function begin(){S.msg='';S.players.forEach((p,i)=>{p.s=0;if(!p.n.trim())p.n='Oyuncu '+(i+1)});
+if(S.mode=='yk'){G={tm:[0,1].map(t=>S.players.filter(p=>p.t==t)),i:0,total:S.rounds*2,ptr:[0,0],deck:sh(YK),ts:[0,0]};if(G.tm[0].length<2||G.tm[1].length<2){S.msg='Her takımda en az 2 oyuncu olmalı. Takım düğmelerine dokun.';return V.setup()}ykReady()}
+else if(S.mode=='gk'){G={r:0};gkRound()}else if(S.mode=='ky'){G={r:0};kyRound()}else if(S.mode=='cb'){G={r:0};cbRound()}
+else{G={i:0,total:S.rounds*S.players.length};s5Ready()}}
+function ykReady(){const t=G.i%2;const tm=G.tm[t];G.t=t;G.d=tm[G.ptr[t]%tm.length];G.rule=S.chaos?R(KK):null;
+draw(`<p class="mu ctr">Tur ${Math.floor(G.i/2)+1}/${S.rounds} · Takım A ${G.ts[0]} – ${G.ts[1]} Takım B</p><div class="card"><div style="font-size:64px">${G.d.a}</div><div class="w">${E(G.d.n)}</div><p class="mu">Takım ${t?'B':'A'} anlatıyor. Takım arkadaşları tahmin eder, rakip takım yasaklı kelimeleri dinler.</p>${G.rule?`<div class="note">🌀 Kaos kuralı: ${E(G.rule)}</div>`:''}</div><button class="b" data-a="ykgo">Başla (${S.dur} sn)</button>`)}
+function ykPlay(){const c=G.card;draw(`<div class="big" id="tm">${G.left}</div><div class="card"><div class="w">${E(c[0])}</div><div class="f">${c.slice(1).map(x=>`<span>${E(x)}</span>`).join('')}</div></div>${G.rule?`<div class="note">🌀 ${E(G.rule)}</div>`:''}<p class="mu ctr">Bu turda: ${G.gain} puan</p><div class="row2"><button class="b ok" data-a="yok">Doğru +1</button><button class="b no" data-a="yno">Yasak −1</button></div><button class="b s" data-a="ypas">Pas</button>`)}
+function ykNext(){if(!G.deck.length)G.deck=sh(YK);G.card=G.deck.pop();const l=G.left,g=G.gain;clearInterval(T);ykPlay();T=setInterval(()=>{G.left--;const e=document.getElementById('tm');if(e)e.textContent=G.left;if(G.left<=0){clearInterval(T);ykEnd()}},1000)}
+function ykEnd(){G.d.s+=G.gain;G.ts[G.t]+=G.gain;G.ptr[G.t]++;draw(`<h2 class="ctr">Süre doldu!</h2><div class="card"><div class="w">${G.gain>=0?'+':''}${G.gain}</div><p class="mu">Takım ${G.t?'B':'A'} · ${E(G.d.n)}</p></div>${sb()}<button class="b" data-a="yknext">${G.i+1>=G.total?'Sonuçlar':'Sıradaki takım'}</button>`)}
+function gkRound(){const [a,b]=R(GK);const f=Math.random()<.5;G={r:G.r,w:f?a:b,o:f?b:a,odd:Math.floor(Math.random()*S.players.length),k:0};gkReveal()}
+function gkReveal(){draw(`<p class="mu ctr">Tur ${G.r+1}/${S.rounds}</p><div class="card"><div style="font-size:64px">${S.players[G.k].a}</div><div class="w">${E(S.players[G.k].n)}</div><p class="mu">Telefonu bu oyuncuya ver. Kelimesini yalnızca o görsün.</p></div><button class="b" data-a="gkshow">Kelimemi göster</button>`)}
+function gkClue(){draw(`<h2>İpucu zamanı</h2><p class="mu">Sırayla tek kelimelik ipucu verin. Kelimeyi doğrudan söylemeyin.</p><div class="pan">${sh(S.players).map((p,i)=>`<div class="lead"><span>${i+1}. ${p.a} ${E(p.n)}</span></div>`).join('')}</div><button class="b" data-a="gkvote">Oylamaya geç</button>`)}
+function gkVote(){draw(`<h2 class="ctr">${S.players[G.vk].a} ${E(S.players[G.vk].n)}, kim farklı?</h2><p class="mu ctr">Telefonu ona ver. Oyunu gizli kullansın.</p>${S.players.map((p,i)=>i==G.vk?'':`<button class="b s" data-a="gkv" data-i="${i}">${p.a} ${E(p.n)}</button>`).join('')}`)}
+function gkRes(){const c=S.players.map(()=>0);G.votes.forEach(v=>c[v]++);const mx=Math.max(...c);const caught=c[G.odd]==mx&&c.filter(x=>x==mx).length==1;
+G.votes.forEach((v,i)=>{if(v==G.odd)S.players[i].s+=1});if(!caught)S.players[G.odd].s+=2;
+draw(`<h2 class="ctr">${caught?'Yakalandı!':'Kaçtı!'}</h2><div class="card"><div style="font-size:56px">${S.players[G.odd].a}</div><div class="w">${E(S.players[G.odd].n)}</div><p class="mu">Farklı kelime: ${E(G.o)} · Diğerleri: ${E(G.w)}</p></div><div class="pan">${S.players.map((p,i)=>`<div class="lead"><span>${p.a} ${E(p.n)}</span><span>${c[i]} oy</span></div>`).join('')}</div>${sb()}<button class="b" data-a="gkafter">${G.r+1>=S.rounds?'Sonuçlar':'Sonraki tur'}</button>`)}
+function s5Ready(){const n=S.players.length;G.p=S.players[G.i%n];G.lvl=Math.min(2,Math.floor(G.i*3/G.total));G.q=R(S5[G.lvl]);
+draw(`<p class="mu ctr">Soru ${G.i+1}/${G.total} · ${LV[G.lvl]}</p><div class="card"><div style="font-size:64px">${G.p.a}</div><div class="w">${E(G.p.n)}</div><p class="mu">Hazır olunca başla. Soru görününce 5 saniyen var.</p></div>${sb()}<button class="b" data-a="s5go">Soruyu göster</button>`)}
+function s5Next(){G.i++;G.i>=G.total?finish():s5Ready()}
+function kyIn(){const p=S.players[G.k];draw(`<p class="mu ctr">Tur ${G.r+1}/${S.rounds} · ${G.k+1}/${S.players.length}</p><div class="card"><div class="w" style="font-size:22px">${E(G.q)}</div></div><h2 class="ctr">${p.a} ${E(p.n)}</h2><textarea id="ka" maxlength="80" ${TA} placeholder="Cevabını yaz, diğerleri görmesin"></textarea><button class="b" data-a="kysave">Cevabı kaydet</button>`)}
+function kyRound(){G.q=R(KY);G.ans=[];G.k=0;kyIn()}
+function kyShow(){G.ord=sh(S.players.map((_,i)=>i));draw(`<div class="card"><div class="w" style="font-size:20px">${E(G.q)}</div></div><div class="pan">${G.ord.map((i,j)=>`<div class="lead"><span>${j+1}. ${E(G.ans[i])}</span></div>`).join('')}</div><p class="mu">Kimin yazdığını tahmin edin, sonra sahiplerini göster.</p><button class="b" data-a="kyrev">Sahiplerini göster</button>`)}
+function initCv(){const c=document.getElementById('cv'),x=c.getContext('2d');c.width=c.height=360;x.fillStyle='#fff';x.fillRect(0,0,360,360);x.lineWidth=5;x.lineCap='round';x.lineJoin='round';x.strokeStyle='#1a0b3d';let d=0;const P=e=>{const r=c.getBoundingClientRect();return[(e.clientX-r.left)*360/r.width,(e.clientY-r.top)*360/r.height]};c.onpointerdown=e=>{d=1;c.setPointerCapture(e.pointerId);const[a,b]=P(e);x.beginPath();x.moveTo(a,b);x.lineTo(a+.1,b);x.stroke()};c.onpointermove=e=>{if(!d)return;const[a,b]=P(e);x.lineTo(a,b);x.stroke()};c.onpointerup=()=>d=0}
+function cbRound(){G.L=Math.min(4,S.players.length);G.ch=[];G.k=0;G.who=sh(S.players.map((_,i)=>i)).slice(0,G.L);G.w=R(CB);cbStep()}
+function cbStep(){const p=S.players[G.who[G.k]];draw(`<p class="mu ctr">Tur ${G.r+1}/${S.rounds} · adım ${G.k+1}/${G.L}</p><div class="card"><div style="font-size:64px">${p.a}</div><div class="w">${E(p.n)}</div><p class="mu">Telefonu bu oyuncuya ver. ${G.k%2?'Önceki çizimi görüp tahmin edecek.':G.k?'Önceki tahmini çizecek.':'Gizli kelimeyi çizecek.'}</p></div><button class="b" data-a="cbgo">Hazırım</button>`)}
+function cbNext(){G.k++;G.k>=G.L?cbReveal():cbStep()}
+function cbReveal(){draw(`<h2>Zincir sonucu</h2><div class="pan ctr"><p class="mu">Gerçek kelime</p><b style="font-size:24px">${E(G.w)}</b></div>${G.ch.map((c,i)=>`<div class="pan"><p class="mu">${S.players[G.who[i]].a} ${E(S.players[G.who[i]].n)} ${i%2?'tahmin etti':'çizdi'}</p>${i%2?`<b style="font-size:22px">${E(c.v)}</b>`:`<img src="${c.v}" style="width:100%;border-radius:12px">`}</div>`).join('')}<p class="mu">En komik halka kim? Dokun: +2 puan.</p>${G.who.map(i=>`<button class="b s" data-a="cbfun" data-i="${i}">${S.players[i].a} ${E(S.players[i].n)}</button>`).join('')}`)}
+function finish(){const s=ST();s.g=(s.g||0)+1;s.m=s.m||{};s.m[S.mode]=(s.m[S.mode]||0)+1;const top1=[...S.players].sort((a,b)=>b.s-a.s)[0];if(top1.s>(s.b||0)){s.b=top1.s;s.bn=top1.n}SV(s);
+const ps=[...S.players].sort((a,b)=>b.s-a.s);const w=ps.filter(p=>p.s==ps[0].s);
+const tw=S.mode=='yk'?`<p class="mu ctr">Takım A ${G.ts[0]} – ${G.ts[1]} Takım B</p>`:'';
+draw(`<h2 class="ctr">Kazanan</h2><div class="card"><div style="font-size:64px">${w.map(p=>p.a).join(' ')}</div><div class="w">${w.map(p=>E(p.n)).join(' & ')}</div><p class="mu">${ps[0].s} puan</p></div>${tw}<div class="pan">${ps.map((p,i)=>`<div class="lead"><span>${i+1}. ${p.a} ${E(p.n)}</span><span>${p.s}</span></div>`).join('')}</div><button class="b" data-a="again">Yeniden oyna</button><button class="b s" data-a="home">Ana menü</button>`)}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(b&&!b.disabled&&A[b.dataset.a])A[b.dataset.a](b.dataset)});
+document.addEventListener('input',e=>{const t=e.target;if(t.tagName=='INPUT'&&t.dataset.i!=null)S.players[+t.dataset.i].n=t.value});
+try{const s=ST();}catch(e){}
+V.home();
+</script></body></html>
