@@ -99,7 +99,8 @@ const NET={client:null,channel:null,host:false,code:null,id:localStorage.getItem
 localStorage.setItem('kk_net_id',NET.id);
 function netConfig(){try{return JSON.parse(localStorage.getItem('kk_net_cfg')||'{}')}catch(e){return{}}}
 function netSave(){const url=(document.getElementById('sburl')?.value||'').trim(),key=(document.getElementById('sbkey')?.value||'').trim();if(!/^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(url)||key.length<20){S.msg='Supabase URL veya anon key hatalı.';return V.settings()}localStorage.setItem('kk_net_cfg',JSON.stringify({url,key}));S.msg='Bağlantı bilgileri kaydedildi.';V.settings()}
-function netName(){const n=(document.getElementById('jn')?.value||localStorage.getItem('kk_nick')||'Oyuncu').trim().slice(0,12)||'Oyuncu';localStorage.setItem('kk_nick',n);return n}
+function netName(){const n=(document.getElementById('hn')?.value||document.getElementById('jn')?.value||localStorage.getItem('kk_nick')||'Oyuncu').trim().slice(0,12)||'Oyuncu';localStorage.setItem('kk_nick',n);return n}
+function netCreateView(){draw(hd('Online Oda Oluştur')+'<div class="pan"><p class="mu">Oyuncu adın</p><input id="hn" maxlength="12" value="'+E(localStorage.getItem('kk_nick')||'Oyuncu')+'" style="width:100%;background:#090b24;border:1px solid #3a3f8f;border-radius:10px;color:white;padding:14px"></div><button class="b" data-a="confirmCreate">Oda oluştur</button>')}
 function netCreate(){NET.host=true;NET.code=Array.from({length:5},()=>R([...'ABCDEFGHJKLMNPRSTUVYZ23456789'])).join('');netConnect(NET.code,netName())}
 function netJoin(){const code=(document.getElementById('jc')?.value||'').trim().toUpperCase();if(code.length!==5){S.msg='Oda kodu 5 karakter olmalı.';return V.joinv()}NET.host=false;NET.code=code;netConnect(code,netName())}
 function netConnect(code,name){const cfg=netConfig();if(!cfg.url||!cfg.key||!window.supabase){S.msg='Önce Ayarlar bölümünden Supabase URL ve anon key bilgilerini kaydet.';return V.joinv()}try{if(NET.channel)NET.client.removeChannel(NET.channel);NET.client=window.supabase.createClient(cfg.url,cfg.key);NET.players=[];NET.started=false;NET.channel=NET.client.channel('kaos-'+code,{config:{presence:{key:NET.id},broadcast:{self:false}}});
@@ -120,7 +121,7 @@ const A={
 home(){S.room=null;S.msg='';V.home()},modes:V.modes,stats:V.stats,settings:V.settings,joinv(){S.msg='';V.joinv()},
 setup(){S.room=null;V.setup()},
 quick(){S.room=null;S.mode=R(Object.keys(MODES));S.rounds=2;begin()},
-create(){netCreate()},
+create(){netCreateView()},
 join(){netJoin()},
 pm(d){S.mode=d.m;V.setup()},rd(d){S.rounds=Math.max(1,Math.min(8,S.rounds+ +d.d));V.setup()},
 kaos(){S.chaos=!S.chaos;V.setup()},du(d){S.dur=Math.max(30,Math.min(120,S.dur+ +d.d));V.settings()},
@@ -130,7 +131,7 @@ rm(d){if(S.players.length<=5){S.msg='En az 5 oyuncu gerekli.'}else S.players.spl
 add(){const n=S.players.length;S.players.push({n:NM[n]||'Oyuncu '+(n+1),a:AV[n%10],t:n%2,s:0});V.setup()},
 reset(){SV({});V.stats()},
 sound(){S.sound=S.sound===false?true:false;sfx('good');V.settings()},
-netSave(){netSave()},copyRoom(){if(navigator.clipboard)navigator.clipboard.writeText(NET.code)},leaveOnline(){netLeave()},startOnline(){netStart()},
+netSave(){netSave()},confirmCreate(){netCreate()},copyRoom(){if(navigator.clipboard)navigator.clipboard.writeText(NET.code)},leaveOnline(){netLeave()},startOnline(){netStart()},
 start(){begin()},
 // Yasaklı Kelime
 ykgo(){G.left=S.dur;G.gain=0;if(!G.deck.length)G.deck=sh(YK);G.card=G.deck.pop();ykPlay();T=setInterval(()=>{G.left--;const e=document.getElementById('tm');if(e)e.textContent=G.left;if(NET.host)netSendScreen();if(G.left<=0){clearInterval(T);ykEnd()}},1000)},
