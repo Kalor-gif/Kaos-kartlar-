@@ -1,6 +1,6 @@
 {
   "appId": "com.kaoskartlari.game",
   "appName": "Kaos Kartları",
-  "webDir": ".",
+  "webDir": "www",
   "bundledWebRuntime": false
 }
