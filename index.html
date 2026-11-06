@@ -95,7 +95,7 @@ ${yk?`<button class="chip ${S.chaos?'on':''}" data-a="kaos">🌀 Kaos Kartları 
 <div class="pan"><p class="mu" style="margin-bottom:10px">Oyuncular (${S.players.length}/10, en az 5)</p>${S.players.map((p,i)=>`<div class="pl"><button class="av" data-a="av" data-i="${i}">${p.a}</button><input data-i="${i}" value="${E(p.n)}" maxlength="12">${yk?`<button class="tm t${p.t}" data-a="tm" data-i="${i}">${p.t?'Takım B':'Takım A'}</button>`:''}<button class="x" data-a="rm" data-i="${i}" aria-label="Çıkar">✕</button></div>`).join('')}<button class="b s" data-a="add" ${S.players.length>=10?'disabled':''}>Oyuncu ekle</button></div>${S.msg?`<div class="note">${S.msg}</div>`:''}<button class="b" data-a="start">Oyunu Başlat</button>`);S.msg=''}
 };
 
-const NET={client:null,channel:null,host:false,code:null,id:localStorage.getItem('kk_net_id')||('p'+Math.random().toString(36).slice(2,11)),players:[],started:false};
+const NET={client:null,channel:null,host:false,code:null,id:localStorage.getItem('kk_net_id')||('p'+Math.random().toString(36).slice(2,11)),players:[],started:false,mode:'yk'};
 localStorage.setItem('kk_net_id',NET.id);
 function netConfig(){try{return JSON.parse(localStorage.getItem('kk_net_cfg')||'{}')}catch(e){return{}}}
 function netSave(){const url=(document.getElementById('sburl')?.value||'').trim(),key=(document.getElementById('sbkey')?.value||'').trim();if(!/^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(url)||key.length<20){S.msg='Supabase URL veya anon key hatalı.';return V.settings()}localStorage.setItem('kk_net_cfg',JSON.stringify({url,key}));S.msg='Bağlantı bilgileri kaydedildi.';V.settings()}
@@ -113,8 +113,8 @@ NET.channel.subscribe(async status=>{if(status==='SUBSCRIBED'){await NET.channel
 function netRoster(){return NET.players.slice(0,10).map((p,i)=>({n:p.name||'Oyuncu',a:p.avatar||AV[i%AV.length],t:i%2,s:0}))}
 function netSend(event,payload){if(NET.channel)NET.channel.send({type:'broadcast',event:event,payload:payload})}
 function netSendScreen(){if(NET.host&&NET.channel)netSend('screen',{html:app.innerHTML})}
-function netLobby(){const players=NET.players;draw(hd('Online Oda')+'<div class="card"><p class="mu">ODA KODUN</p><div class="w" style="font-size:42px;letter-spacing:8px">'+NET.code+'</div><button class="b s" data-a="copyRoom">Kodu kopyala</button></div><div class="pan"><b>Oyuncular ('+players.length+'/10)</b>'+players.map(p=>'<div class="lead"><span>'+E(p.avatar||'🎮')+' '+E(p.name||'Oyuncu')+'</span><span class="tag">'+(p.host?'Kurucu':'Bağlandı')+'</span></div>').join('')+'</div><div class="note">Online sürüm: Yasaklı Kelime. Oyun ekranı ve tur işlemleri oda üyeleriyle eş zamanlı paylaşılır. En az 5 oyuncu gerekir.</div>'+(NET.host?'<button class="b" data-a="startOnline" '+(players.length<5?'disabled':'')+'>Oyunu başlat</button>':'<p class="mu ctr">Oda kurucusunun başlatması bekleniyor.</p>')+'<button class="b g" data-a="leaveOnline">Odadan ayrıl</button>')}
-function netStart(){const players=netRoster();if(players.length<5){netLobby();return}S.players=players;S.mode='yk';S.rounds=3;S.dur=60;S.chaos=false;NET.started=true;netSend('game-start',{mode:S.mode,rounds:S.rounds,dur:S.dur,players:S.players,chaos:S.chaos});begin()}
+function netLobby(){const players=NET.players;draw(hd('Online Oda')+'<div class="card"><p class="mu">ODA KODUN</p><div class="w" style="font-size:42px;letter-spacing:8px">'+NET.code+'</div><button class="b s" data-a="copyRoom">Kodu kopyala</button></div><div class="pan"><b>Oyuncular ('+players.length+'/10)</b>'+players.map(p=>'<div class="lead"><span>'+E(p.avatar||'🎮')+' '+E(p.name||'Oyuncu')+'</span><span class="tag">'+(p.host?'Kurucu':'Bağlandı')+'</span></div>').join('')+'</div><div class="pan"><b>Online oyun modu</b><div class="chips"><button class="chip '+(NET.mode==='yk'?'on':'')+'" data-a="netMode" data-m="yk">Yasaklı Kelime</button><button class="chip '+(NET.mode==='s5'?'on':'')+'" data-a="netMode" data-m="s5">Son 5 Saniye</button></div></div><div class="note">Online oda ekranı ve tur işlemleri kurucu üzerinden tüm cihazlarla eş zamanlı paylaşılır. En az 5 oyuncu gerekir.</div>'+(NET.host?'<button class="b" data-a="startOnline" '+(players.length<5?'disabled':'')+'>Oyunu başlat</button>':'<p class="mu ctr">Oda kurucusunun başlatması bekleniyor.</p>')+'<button class="b g" data-a="leaveOnline">Odadan ayrıl</button>')}
+function netStart(){const players=netRoster();if(players.length<5){netLobby();return}S.players=players;S.mode=NET.mode;S.rounds=3;S.dur=60;S.chaos=false;NET.started=true;netSend('game-start',{mode:S.mode,rounds:S.rounds,dur:S.dur,players:S.players,chaos:S.chaos});begin()}
 function netLeave(){if(NET.channel)NET.client.removeChannel(NET.channel);NET.channel=null;NET.host=false;NET.code=null;NET.players=[];NET.started=false;V.home()}
 
 const A={
@@ -131,7 +131,7 @@ rm(d){if(S.players.length<=5){S.msg='En az 5 oyuncu gerekli.'}else S.players.spl
 add(){const n=S.players.length;S.players.push({n:NM[n]||'Oyuncu '+(n+1),a:AV[n%10],t:n%2,s:0});V.setup()},
 reset(){SV({});V.stats()},
 sound(){S.sound=S.sound===false?true:false;sfx('good');V.settings()},
-netSave(){netSave()},confirmCreate(){netCreate()},copyRoom(){if(navigator.clipboard)navigator.clipboard.writeText(NET.code)},leaveOnline(){netLeave()},startOnline(){netStart()},
+netSave(){netSave()},confirmCreate(){netCreate()},copyRoom(){if(navigator.clipboard)navigator.clipboard.writeText(NET.code)},leaveOnline(){netLeave()},startOnline(){netStart()},netMode(d){NET.mode=d.m==='s5'?'s5':'yk';netLobby()},
 start(){begin()},
 // Yasaklı Kelime
 ykgo(){G.left=S.dur;G.gain=0;if(!G.deck.length)G.deck=sh(YK);G.card=G.deck.pop();ykPlay();T=setInterval(()=>{G.left--;const e=document.getElementById('tm');if(e)e.textContent=G.left;if(NET.host)netSendScreen();if(G.left<=0){clearInterval(T);ykEnd()}},1000)},
@@ -144,7 +144,7 @@ gkvote(){G.vk=0;G.votes=[];gkVote()},
 gkv(d){G.votes.push(+d.i);G.vk++;G.vk>=S.players.length?gkRes():gkVote()},
 gkafter(){G.r++;G.r>=S.rounds?finish():gkRound()},
 // Son 5 Saniye
-s5go(){let t=5;draw(`<p class="mu ctr">${E(G.p.n)} · ${LV[G.lvl]}</p><div class="card"><div class="w" style="font-size:26px">5 saniyede ${G.q} söyle!</div></div><div class="big" id="tm">5</div><button class="b ok" data-a="s5ok">Başardı (+${G.lvl+1})</button><button class="b no" data-a="s5no">Yapamadı</button>`);T=setInterval(()=>{t--;const e=document.getElementById('tm');if(e)e.textContent=t>0?t:'Süre doldu';if(t<=0)clearInterval(T)},1000)},
+s5go(){let t=5;draw(`<p class="mu ctr">${E(G.p.n)} · ${LV[G.lvl]}</p><div class="card"><div class="w" style="font-size:26px">5 saniyede ${G.q} söyle!</div></div><div class="big" id="tm">5</div><button class="b ok" data-a="s5ok">Başardı (+${G.lvl+1})</button><button class="b no" data-a="s5no">Yapamadı</button>`);T=setInterval(()=>{t--;const e=document.getElementById('tm');if(e)e.textContent=t>0?t:'Süre doldu';if(NET.host)netSendScreen();if(t<=0)clearInterval(T)},1000)},
 s5ok(){G.p.s+=G.lvl+1;s5Next()},s5no(){s5Next()},
 kysave(){G.ans.push(document.getElementById('ka').value.trim()||'(boş)');G.k++;G.k>=S.players.length?kyShow():kyIn()},
 kyrev(){draw(`<h2>Sahipleri</h2><p class="mu">En komik cevaba dokun: sahibi +2 puan alır.</p>${G.ord.map(i=>`<button class="b s" data-a="kyfun" data-i="${i}">${E(G.ans[i])}<br><small>${S.players[i].a} ${E(S.players[i].n)}</small></button>`).join('')}`)},
